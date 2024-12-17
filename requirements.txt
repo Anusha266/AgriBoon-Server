@@ -93,7 +93,6 @@ jupyterlab_pygments==0.3.0
 jupyterlab_server==2.27.3
 keyring==18.0.1
 kiwisolver==1.4.7
-language-selector==0.1
 launchpadlib==1.10.13
 lazr.restfulclient==0.14.2
 lazr.uri==1.0.3
