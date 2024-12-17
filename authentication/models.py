@@ -5,7 +5,6 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import BaseUserManager
-from phonenumber_field.modelfields import PhoneNumberField
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, phone_number, password, **extra_fields):
@@ -22,7 +21,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     district = models.CharField(max_length=100)
     mandal = models.CharField(max_length=100)
     village = models.CharField(max_length=100)
-    phone_number = PhoneNumberField(_(""),unique=True)
+    phone_number = models.CharField(max_length=50,unique=True)
     password = models.CharField(max_length=128)
     
     is_active = models.BooleanField(default=True)
