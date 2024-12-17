@@ -28,4 +28,4 @@ sympy==1.13.3
 torch==2.4.1
 triton==3.0.0
 typing-extensions==4.12.2
-backports.zoneinfo==0.2.1
+backports.zoneinfo;python_version<"3.9"
