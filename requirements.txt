@@ -31,7 +31,6 @@ colorama==0.4.3
 comm==0.2.2
 contourpy==1.1.1
 cryptography==37.0.4
-cupshelpers==1.0
 cycler==0.12.1
 dbus-python==1.2.16
 debugpy==1.8.11
