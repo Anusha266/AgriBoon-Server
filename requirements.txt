@@ -39,7 +39,6 @@ defusedxml==0.7.1
 Deprecated==1.2.13
 distlib==0.3.0
 distro==1.4.0
-distro-info==0.23+ubuntu1.1
 Django==4.2.16
 django-cors-headers==4.4.0
 django-debug-toolbar==3.0
