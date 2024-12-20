@@ -14,7 +14,7 @@ from torchvision import transforms
 from datetime import datetime
 
 # Load models at startup to avoid reloading every request
-
+from server.ml_models.groundnut_quality_model_architecture import GroundnutClassifier
 
 quality_mapping = {'low': 0.2, 'medium': 0.50, 'high': 1}
 
@@ -35,10 +35,16 @@ class PricePredictionAPIView(APIView):
             return Response({"error": "Missing required fields."}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            groundnut_model = torch.load('server/models/groundnut_model_epoch_300_with_softmax.pth')    
-            min_price_model = joblib.load('server/models/dynamic_min_price_model.pkl')
-            modal_price_model = joblib.load('server/models/dynamic_modal_price_model.pkl')
-            max_price_model = joblib.load('server/models/dynamic_max_price_model.pkl')
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            groundnut_model = GroundnutClassifier(num_classes=3).to(device)
+            try:
+                model_checkpoint = torch.load('server/ml_models/groundnut_model_epoch_300_with_softmax.pth', map_location=device)
+                groundnut_model.load_state_dict(model_checkpoint)
+            except Exception as e:
+                print(f"Error loading model: {e}")
+            min_price_model = joblib.load('server/ml_models/dynamic_min_price_model.pkl')
+            modal_price_model = joblib.load('server/ml_models/dynamic_modal_price_model.pkl')
+            max_price_model = joblib.load('server/ml_models/dynamic_max_price_model.pkl')
         except Exception as e:
             return Response({"error": "Error loading models."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -107,7 +113,12 @@ class PricePredictionAPIView(APIView):
         max_price_pred = max_price_model.predict(X_new_max)
 
         # Return the predicted prices
-        return min_price_pred[0], modal_price_pred[0], max_price_pred[0]
+        return Response({"data": 
+                        {  "min_price": min_price_pred[0],
+                        "modal_price": modal_price_pred[0], 
+                        "max_price": max_price_pred[0]}}, 
+                        status=status.HTTP_200_OK
+        )
     
     def predict_quality(self, image,groundnut_model):
         """Predict the quality of the image using the groundnut model."""
